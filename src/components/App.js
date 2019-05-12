@@ -48,15 +48,20 @@ class App extends Component {
     .catch(error => console.error(error));
   }
 
+  chooseSize = (pizza) => {
+    console.log('e', pizza)
+  }
+
   render() {
 
     const pizzaList = this.state.pizzaMenu.map((pizza, ind) => {
       return (
         <div key={ind}>
           <h1>{pizza.name}</h1>
-          <div>Max Toppings: {pizza.maxToppinga}</div>
+          <div>Max Toppings: {pizza.maxToppings}</div>
           <div>Base Price: {pizza.basePrice}</div>
           <div>Toppings</div>
+          <button onClick={() => this.chooseSize(pizza.name)}>Choose</button>
         </div>
       )
     })
