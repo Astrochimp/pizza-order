@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import '../css/App.css';
 import ApolloClient from 'apollo-boost';
+import { ApolloProvider } from "react-apollo";
 import gql from 'graphql-tag';
-
+import Toppings from './Toppings';
 class App extends Component {
 
   state = {
-    pizzaMenu: []
+    pizzaMenu: [],
+    selectedSize: ''
   }
 
   componentDidMount() {
@@ -15,8 +17,7 @@ class App extends Component {
     });
 
     this.setState({
-      client,
-      pizzaMenu: []
+      client
     })
 
     client.query({
@@ -50,6 +51,12 @@ class App extends Component {
 
   chooseSize = (pizza) => {
     console.log('e', pizza)
+
+    const pizzaSize = pizza.toUpperCase();
+
+    this.setState({
+      selectedSize: pizzaSize
+    })
   }
 
   render() {
@@ -61,16 +68,30 @@ class App extends Component {
           <div>Max Toppings: {pizza.maxToppings}</div>
           <div>Base Price: {pizza.basePrice}</div>
           <div>Toppings</div>
-          <button onClick={() => this.chooseSize(pizza.name)}>Choose</button>
+          <button onClick={() => this.chooseSize(pizza.name)}>Choose Size</button>
         </div>
       )
     })
 
+    const client = new ApolloClient({
+      uri: 'https://core-graphql.dev.waldo.photos/pizza'
+    });
+
     return (
-      <div>
-        Pizza Order
-        {pizzaList}
-      </div>
+      <ApolloProvider client={client}>
+        <div className='pizza-size'>
+          <h1>
+            <span role='img' aria-label='pizza'>🍕</span> 
+            Pizza Order 
+            <span role='img' aria-label='pizza'>🍕</span> 
+          </h1>
+          {pizzaList}
+
+          {this.state.selectedSize !== '' && 
+            <Toppings size={this.state.selectedSize} />
+          }
+        </div>
+      </ApolloProvider>
     );
     }
 }
