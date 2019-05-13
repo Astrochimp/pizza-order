@@ -3,21 +3,14 @@ import '../css/App.css';
 import { ApolloProvider } from "react-apollo";
 import Toppings from './Toppings';
 import Menu from './Menu';
+import Cart from './Cart';
 import { client } from './config';
+import { connect } from 'react-redux';
+import { selectSize } from '../actions/index'
 
 class App extends Component {
-
-  state = {
-    selectedSize: ''
-  }
-
-
   updateSize = (size) => {
-    const pizzaSize = size.toUpperCase();
-
-    this.setState({
-      selectedSize: pizzaSize
-    })
+    this.props.selectSize(size);
   }
 
   render() {
@@ -32,16 +25,23 @@ class App extends Component {
           </h1>
 
           <div className='pizza-size'>
-            <Menu updateSize={this.updateSize} />
+            <Menu />
 
-            {this.state.selectedSize !== '' && 
-              <Toppings size={this.state.selectedSize} />
+            {this.props.selectedSize !== '' && 
+              <Toppings size={this.props.selectedSize} />
             }
+
+            <Cart />
           </div>
         </div>
       </ApolloProvider>
     );
-    }
+  }
 }
 
-export default App;
+export default connect(
+  (state) => ({
+    selectedSize: state.selectedSize
+  }),
+  { selectSize }
+)(App);

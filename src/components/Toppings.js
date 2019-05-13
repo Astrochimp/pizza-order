@@ -1,22 +1,49 @@
 import React, { Component } from 'react'
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
+import { connect } from 'react-redux';
+import { addTopping, removeTopping, addToCart } from '../actions/index'
 
 class Toppings extends Component {
 
   state = {
     toppingDetails: [],
     maxToppings: 0,
-    pizzaCost: 0
+    pizzaCost: this.props.pizzaInfo.basePrice,
+    toppingsMessage: '',
+    pizzaOrder: {}
   }
 
-  addTopping = (top) => {
-    console.log('top', top)
-    const updatedCost = this.state.pizzaCost + top.price;
+  addTopping = (e, top) => {
+    let updatedCost = this.state.pizzaCost;
+    const mxTop = this.props.pizzaInfo.maxToppings || this.props.pizzaInfo.toppings.length;
+
+    if (e.target.checked) {
+      if (this.props.toppings.length < mxTop) {
+        updatedCost = this.state.pizzaCost + top.price;
+        this.props.addTopping(top, updatedCost);
+      } else {
+        e.target.checked = false;
+        this.setState({
+          toppingsMessage: 'Max Amount Of Toppings Reached!'
+        })
+      }
+    } else {
+      updatedCost = this.state.pizzaCost - top.price;
+      this.props.removeTopping(top, updatedCost);
+      this.setState({
+        toppingsMessage: ''
+      })
+    }
 
     this.setState({
       pizzaCost: updatedCost
     })
+  }
+
+  addPizzaToCart = () => {
+    // reset checkbox items
+    this.props.addToCart()
   }
 
   render () {
@@ -51,8 +78,10 @@ class Toppings extends Component {
                   <input type='checkbox'
                     id={`topping-${ind}`}
                     value={top.topping.name}
-                    onClick={() => this.addTopping(top.topping)} />
-                  {top.topping.name} {top.topping.price}
+                    onChange={(e) => this.addTopping(e, top.topping)} />
+                  {top.topping.price.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}
+                  {` `}
+                  {top.topping.name}
                 </label>
               </div>)
             })
@@ -60,13 +89,18 @@ class Toppings extends Component {
             const formatCost = this.state.pizzaCost.toLocaleString('en-US', { style: 'currency', currency: 'USD' })
 
             return (
-              <div>{data.pizzaSizeByName.name} Pizza Toppings
+              <div>{data.pizzaSizeByName.name}
+                <h3>Pizza Toppings</h3>
+                <div>{ this.state.toppingsMessage }</div>
                 <div>
                   {formatCost}
                 </div>
+                <div>Max: {data.pizzaSizeByName.maxToppings}</div>
                 <div>
                   {toppings}
                 </div>
+
+                <button onClick={this.addPizzaToCart}>Add to Cart</button>
               </div>
             )
           }}
@@ -76,4 +110,13 @@ class Toppings extends Component {
   }
 }
 
-export default Toppings
+export default connect(
+  (state) => ({
+    toppings: state.toppings,
+    pizzaInfo: state.pizzaInfo
+  }),{
+    addToCart,
+    addTopping,
+    removeTopping
+  }
+)(Toppings);

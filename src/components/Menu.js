@@ -32,8 +32,7 @@ const Menu = (props) => {
           if (error) return `Error! ${error}`;
 
           return(
-            <List pizzaSizes={data.pizzaSizes} 
-              chooseSize={props.updateSize} />
+            <List pizzaSizes={data.pizzaSizes} />
           )
         }}
       </Query>
@@ -41,4 +40,4 @@ const Menu = (props) => {
   )
 }
 
-export default Menu
+export default Menu;
