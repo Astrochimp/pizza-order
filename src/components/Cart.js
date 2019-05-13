@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
+import { removeItem } from '../actions/index'
 
 class Cart extends Component {
   render () {
@@ -15,7 +16,7 @@ class Cart extends Component {
 
           return (
             <div key={ind} className='cart-item'>
-              <h3>{cart.name} {cost}</h3>
+              <h3>{cart.name} {cost} <button onClick={() => this.props.removeItem(cart)}>remove</button></h3>
               <ul>
                 {cart.toppings.map((top, ind) => <li key={ind}>{top.name}</li>)}
               </ul>
@@ -34,5 +35,8 @@ class Cart extends Component {
 export default connect(
   (state) => ({
     cart: state.cart
-  })
+  }),
+  {
+    removeItem
+  }
 )(Cart);

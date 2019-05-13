@@ -4,6 +4,14 @@ export const REMOVE_TOPPING = 'REMOVE_TOPPING';
 export const SELECT_SIZE = 'SELECT_SIZE';
 export const UPDATE_COST = 'UPDATE_COST';
 export const ADD_TO_CART = 'ADD_TO_CART';
+export const REMOVE_IEM = 'REMOVE_ITEM';
+
+export const removeItem = (pizzaOrder) => {
+  return({
+    type: REMOVE_IEM,
+    payload: pizzaOrder
+  })
+}
 
 export const addToCart = (pizzaOrder) => {
   return ({

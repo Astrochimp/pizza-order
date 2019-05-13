@@ -13,6 +13,13 @@ const initialState = {
 
 export default( state=initialState, action) => {
   switch (action.type) {
+    case actions.REMOVE_IEM:
+      const cartUpdate = state.cart.filter((ct) => ct.cost !== action.payload.cost)
+
+      return {
+        ...state,
+        cart: [...cartUpdate]
+      }
     case actions.ADD_TO_CART:
       const pizzaOrder = {
         cost: state.pizzaCost,
