@@ -3,6 +3,7 @@ import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
 import { connect } from 'react-redux';
 import { addTopping, removeTopping, addToCart } from '../actions/index'
+import ToppingList from './ToppingList';
 
 class Toppings extends Component {
 
@@ -11,7 +12,8 @@ class Toppings extends Component {
     maxToppings: 0,
     pizzaCost: this.props.pizzaInfo.basePrice,
     toppingsMessage: '',
-    pizzaOrder: {}
+    pizzaOrder: {},
+    toppings: []
   }
 
   addTopping = (e, top) => {
@@ -72,20 +74,6 @@ class Toppings extends Component {
             if (loading) return null;
             if (error) return `Error! ${error}`;
 
-            const toppings = data.pizzaSizeByName.toppings.map((top, ind) => {
-              return (<div key={ind}>
-                <label htmlFor={`topping-${ind}`}>
-                  <input type='checkbox'
-                    id={`topping-${ind}`}
-                    value={top.topping.name}
-                    onChange={(e) => this.addTopping(e, top.topping)} />
-                  {top.topping.price.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}
-                  {` `}
-                  {top.topping.name}
-                </label>
-              </div>)
-            })
-
             const formatCost = this.state.pizzaCost.toLocaleString('en-US', { style: 'currency', currency: 'USD' })
 
             return (
@@ -97,7 +85,9 @@ class Toppings extends Component {
                 </div>
                 <div>Max: {data.pizzaSizeByName.maxToppings}</div>
                 <div>
-                  {toppings}
+                  <ToppingList
+                    addTopping={this.addTopping}
+                    toppings={data.pizzaSizeByName.toppings} />
                 </div>
 
                 <button onClick={this.addPizzaToCart}>Add to Cart</button>
