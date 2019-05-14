@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
 import { connect } from 'react-redux';
-import { addTopping, removeTopping, addToCart } from '../actions/index'
+import { addTopping, removeTopping, addToCart, clearList } from '../actions/index'
 import ToppingList from './ToppingList';
 
 class Toppings extends Component {
@@ -44,13 +44,26 @@ class Toppings extends Component {
     })
   }
 
+  clearList = () => {
+    this.setState({
+      maxToppings: 0,
+      pizzaCost: this.props.pizzaInfo.basePrice,
+      toppingsMessage: '',
+      pizzaOrder: {},
+      toppings: [],
+    })
+
+    this.props.clearList();
+  }
+
   addPizzaToCart = () => {
     // reset checkbox items
     this.props.addToCart()
+    this.clearList()
   }
 
   static getDerivedStateFromProps(props, state) {
-    if (props.size !== state.size) {
+    if ((props.size !== state.size) || (props.toppings.length === 0)) {
       return {
         pizzaCost: props.pizzaInfo.basePrice,
         toppings: [],
@@ -102,6 +115,7 @@ class Toppings extends Component {
                 <div>Max: {data.pizzaSizeByName.maxToppings}</div>
                 <div>
                   <ToppingList
+                    clearList={this.clearList}
                     addTopping={this.addTopping}
                     toppings={data.pizzaSizeByName.toppings} />
                 </div>
@@ -123,6 +137,7 @@ export default connect(
   }),{
     addToCart,
     addTopping,
-    removeTopping
+    removeTopping,
+    clearList
   }
 )(Toppings);

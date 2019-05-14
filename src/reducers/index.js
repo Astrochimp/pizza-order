@@ -11,8 +11,16 @@ const initialState = {
   pizzaInfo: {}
 }
 
-export default( state=initialState, action) => {
+export default (state=initialState, action) => {
   switch (action.type) {
+    case actions.CLEAR_LIST:
+      return {
+        ...state,
+        toppings: [],
+        selectedSize: '',
+        pizzaCost: 0,
+        pizzaInfo: {}
+      }
     case actions.REMOVE_IEM:
       const cartUpdate = state.cart.filter((ct) => ct.cost !== action.payload.cost)
 

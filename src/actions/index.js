@@ -5,6 +5,14 @@ export const SELECT_SIZE = 'SELECT_SIZE';
 export const UPDATE_COST = 'UPDATE_COST';
 export const ADD_TO_CART = 'ADD_TO_CART';
 export const REMOVE_IEM = 'REMOVE_ITEM';
+export const CLEAR_LIST = 'CLEAR_LIST';
+
+
+export const clearList = () => {
+  return({
+    type: CLEAR_LIST
+  })
+}
 
 export const removeItem = (pizzaOrder) => {
   return({
