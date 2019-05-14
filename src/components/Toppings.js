@@ -13,7 +13,8 @@ class Toppings extends Component {
     pizzaCost: this.props.pizzaInfo.basePrice,
     toppingsMessage: '',
     pizzaOrder: {},
-    toppings: []
+    toppings: [],
+    size: this.props.size
   }
 
   addTopping = (e, top) => {
@@ -48,6 +49,21 @@ class Toppings extends Component {
     this.props.addToCart()
   }
 
+  static getDerivedStateFromProps(props, state) {
+    if (props.size !== state.size) {
+      return {
+        pizzaCost: props.pizzaInfo.basePrice,
+        toppings: [],
+        size: props.size,
+        maxToppings: props.pizzaInfo.maxToppings,
+        pizzaOrder: {}
+      }
+    }
+
+    return null;
+  }
+
+
   render () {
     const GET_PIZZA_DETAILS = gql`
       query getPizzaDetails($size: PizzaSizes)
@@ -74,7 +90,7 @@ class Toppings extends Component {
             if (loading) return null;
             if (error) return `Error! ${error}`;
 
-            const formatCost = this.state.pizzaCost.toLocaleString('en-US', { style: 'currency', currency: 'USD' })
+            const formatCost = this.state.pizzaCost.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
 
             return (
               <div>{data.pizzaSizeByName.name}
