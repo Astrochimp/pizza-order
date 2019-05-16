@@ -22,6 +22,7 @@ class ToppingList extends Component {
   }
 
   addTopping = (e, topping) => {
+    /*
     const listCheck = this.state.topcheckbox.map((top) => {
       if (topping === top.topping) {
         return {
@@ -39,6 +40,7 @@ class ToppingList extends Component {
     this.setState({
       topcheckbox: listCheck
     })
+    */
 
     this.props.addTopping(e, topping)
   }
